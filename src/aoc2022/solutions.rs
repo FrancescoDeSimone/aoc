@@ -191,7 +191,6 @@ pub fn day5_1(input: String) -> String {
             if space != 0 {
                 space = 0;
             }
-            continue;
         } else if char == ' ' {
             if space == 0 {
                 index += 1;
@@ -199,10 +198,8 @@ pub fn day5_1(input: String) -> String {
             }
             space += 1;
             space %= 4;
-            continue;
         } else if char == '\n' {
             index = 0;
-            continue;
         } else if char.is_alphabetic() {
             stacks[index].push(char);
         }
@@ -254,7 +251,6 @@ pub fn day5_2(input: String) -> String {
             if space != 0 {
                 space = 0;
             }
-            continue;
         } else if char == ' ' {
             if space == 0 {
                 index += 1;
@@ -262,10 +258,8 @@ pub fn day5_2(input: String) -> String {
             }
             space += 1;
             space %= 4;
-            continue;
         } else if char == '\n' {
             index = 0;
-            continue;
         } else if char.is_alphabetic() {
             stacks[index].push(char);
         }
