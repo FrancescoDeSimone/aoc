@@ -173,3 +173,127 @@ pub fn day4_2(input: String) -> usize {
     }
     counter
 }
+
+pub fn day5_1(input: String) -> String {
+    let mut table: Vec<Vec<char>> = Vec::new();
+    table.push(Vec::new());
+    let mut index = 0;
+
+    for i in input
+        .split("\n\n")
+        .map(|e| e.to_string())
+        .collect::<Vec<String>>()
+        .get(0)
+        .unwrap()
+        .chars()
+    {
+        if i == '\n' {
+            table.push(Vec::new());
+            index += 1;
+            continue;
+        }
+        table[index].push(i);
+    }
+    let mut stacks: Vec<Vec<char>> = Vec::new();
+    table.reverse();
+    let mut index = 0;
+    let row = &table[0];
+    for i in row {
+        if i.is_digit(10) {
+            let pos: usize = row.into_iter().position(|e| e == i).unwrap();
+            stacks.push(Vec::new());
+            for x in 1..table.len() {
+                if table[x][pos].is_alphabetic() {
+                    stacks[index].push(table[x][pos]);
+                }
+            }
+            index += 1;
+        }
+    }
+
+    let regex = Regex::new(r"(?m)^move ([0-9]+) from ([0-9]+) to ([0-9]+)$").unwrap();
+    let movement = regex.captures_iter(&input);
+
+    for m in movement {
+        let quantity = m.get(1).unwrap().as_str().parse::<usize>().unwrap() - 1;
+        let from = m.get(2).unwrap().as_str().parse::<usize>().unwrap() - 1;
+        let to = m.get(3).unwrap().as_str().parse::<usize>().unwrap() - 1;
+        let l = stacks[from].len();
+        let mut moving =stacks[from].drain(l-quantity-1..l).collect::<Vec<char>>();
+        moving.reverse();
+        for e in moving{
+            stacks[to].push(e);
+        }
+    }
+    let mut res:String = String::new();
+    for mut i in stacks {
+        let p = i.pop();
+        if p.is_some(){
+            res.push(p.unwrap());
+        }
+    }
+
+    res
+
+}
+
+pub fn day5_2(input: String) -> String {
+    let mut table: Vec<Vec<char>> = Vec::new();
+    table.push(Vec::new());
+    let mut index = 0;
+
+    for i in input
+    .split("\n\n")
+    .map(|e| e.to_string())
+    .collect::<Vec<String>>()
+    .get(0)
+    .unwrap()
+    .chars()
+    {
+        if i == '\n' {
+            table.push(Vec::new());
+            index += 1;
+            continue;
+        }
+        table[index].push(i);
+    }
+    let mut stacks: Vec<Vec<char>> = Vec::new();
+    table.reverse();
+    let mut index = 0;
+    let row = &table[0];
+    for i in row {
+        if i.is_digit(10) {
+            let pos: usize = row.into_iter().position(|e| e == i).unwrap();
+            stacks.push(Vec::new());
+            for x in 1..table.len() {
+                if table[x][pos].is_alphabetic() {
+                    stacks[index].push(table[x][pos]);
+                }
+            }
+            index += 1;
+        }
+    }
+
+    let regex = Regex::new(r"(?m)^move ([0-9]+) from ([0-9]+) to ([0-9]+)$").unwrap();
+    let movement = regex.captures_iter(&input);
+
+    for m in movement {
+        let quantity = m.get(1).unwrap().as_str().parse::<usize>().unwrap() - 1;
+        let from = m.get(2).unwrap().as_str().parse::<usize>().unwrap() - 1;
+        let to = m.get(3).unwrap().as_str().parse::<usize>().unwrap() - 1;
+        let l = stacks[from].len();
+        let mut moving =stacks[from].drain(l-quantity-1..l).collect::<Vec<char>>();
+        for e in moving{
+            stacks[to].push(e);
+        }
+    }
+    let mut res:String = String::new();
+    for mut i in stacks {
+        let p = i.pop();
+        if p.is_some(){
+            res.push(p.unwrap());
+        }
+    }
+
+    res
+}
