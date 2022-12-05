@@ -224,14 +224,10 @@ pub fn day5_1(input: String) -> String {
             stacks[to].push(e);
         }
     }
-    let mut res: String = String::new();
-    for mut i in stacks {
-        let p = i.pop();
-        if p.is_some() {
-            res.push(p.unwrap());
-        }
-    }
-    res
+    stacks
+        .into_iter()
+        .map(|mut e: Vec<char>| e.pop().unwrap_or(' ').to_string())
+        .collect::<String>()
 }
 
 pub fn day5_2(input: String) -> String {
@@ -283,12 +279,8 @@ pub fn day5_2(input: String) -> String {
             stacks[to].push(e);
         }
     }
-    let mut res: String = String::new();
-    for mut i in stacks {
-        let p = i.pop();
-        if p.is_some() {
-            res.push(p.unwrap());
-        }
-    }
-    res
+    stacks
+        .into_iter()
+        .map(|mut e: Vec<char>| e.pop().unwrap_or(' ').to_string())
+        .collect::<String>()
 }
