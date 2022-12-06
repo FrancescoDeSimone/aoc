@@ -1,5 +1,5 @@
 use regex::Regex;
-use std::collections::{BinaryHeap, HashMap, HashSet};
+use std::collections::{BinaryHeap, HashMap, HashSet,VecDeque};
 
 pub fn day1_1(input: String) -> usize {
     input
@@ -283,4 +283,38 @@ pub fn day5_2(input: String) -> String {
         .into_iter()
         .map(|mut e: Vec<char>| e.pop().unwrap_or(' ').to_string())
         .collect::<String>()
+}
+
+pub fn day6_1(input: String) -> usize {
+    let mut sliding_window = VecDeque::new();
+    let mut index = 0;
+    for i in input.chars(){
+        sliding_window.push_front(i);
+        index+=1;
+        if sliding_window.len() == 4 {
+            let mut uniq = HashSet::new();
+            if sliding_window.clone().into_iter().all(move |x| uniq.insert(x)) {
+                break;
+            }
+            sliding_window.pop_back();
+        }
+    }
+    index
+}
+
+pub fn day6_2(input: String) -> usize {
+    let mut sliding_window = VecDeque::new();
+    let mut index = 0;
+    for i in input.chars(){
+        sliding_window.push_front(i);
+        index+=1;
+        if sliding_window.len() == 14 {
+            let mut uniq = HashSet::new();
+            if sliding_window.clone().into_iter().all(move |x| uniq.insert(x)) {
+                break;
+            }
+            sliding_window.pop_back();
+        }
+    }
+    index
 }
