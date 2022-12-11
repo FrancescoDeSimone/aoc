@@ -36,4 +36,19 @@ fn main() {
     let file = fs::read_to_string("src/aoc2022/input/day7").expect("file not found");
     println!("Part 1: {}", aoc2022::day7::part_1(file.clone()));
     println!("Part 2: {}", aoc2022::day7::part_2(file.clone()));
+
+    println!("part8");
+    let file = fs::read_to_string("src/aoc2022/input/day8").expect("file not found");
+    println!("Part 1: {}", aoc2022::day8::part_1(file.clone()));
+    println!("Part 2: {}", aoc2022::day8::part_2(file.clone()));
+
+    println!("part9");
+    let file = fs::read_to_string("src/aoc2022/input/day9").expect("file not found");
+    println!("Part 1: {}", aoc2022::day9::part_1(file.clone()));
+    println!("Part 2: {}", aoc2022::day9::part_2(file.clone()));
+
+    println!("part10");
+    let file = fs::read_to_string("src/aoc2022/input/day10").expect("file not found");
+    println!("Part 1: {}", aoc2022::day10::part_1(file.clone()));
+    println!("Part 2: {}", aoc2022::day10::part_2(file.clone()));
 }

@@ -6,12 +6,10 @@ pub fn part_1(input: String) -> usize {
     let mut size_table: HashMap<String, usize> = HashMap::new();
 
     let cd_regex = Regex::new(r"\$ cd [a-zA-Z/.]+").unwrap();
-    let dir_regex = Regex::new("^dir [a-zA-Z]+$").unwrap();
     let file_regex = Regex::new("^[0-9]+ [a-zA-Z.]+$").unwrap();
 
     for line in input.split('\n').filter(|e| !e.is_empty()) {
         match line {
-            "$ ls" => {}
             line if cd_regex.is_match(line) => {
                 let filename = line.split(' ').into_iter().last().unwrap();
                 current_path = match filename {
@@ -25,7 +23,6 @@ pub fn part_1(input: String) -> usize {
                     _ => current_path + filename + "/",
                 }
             }
-            line if dir_regex.is_match(line) => {}
             line if file_regex.is_match(line) => {
                 let size: usize = line
                     .split(' ')
@@ -52,9 +49,7 @@ pub fn part_1(input: String) -> usize {
                         String::from(root)
                     });
             }
-            _ => {
-                unreachable!();
-            }
+            _ => {}
         }
     }
     size_table
@@ -70,12 +65,10 @@ pub fn part_2(input: String) -> usize {
     let mut size_table: HashMap<String, usize> = HashMap::new();
 
     let cd_regex = Regex::new(r"\$ cd [a-zA-Z/.]+").unwrap();
-    let dir_regex = Regex::new("^dir [a-zA-Z]+$").unwrap();
     let file_regex = Regex::new("^[0-9]+ [a-zA-Z.]+$").unwrap();
 
     for line in input.split('\n').filter(|e| !e.is_empty()) {
         match line {
-            "$ ls" => {}
             line if cd_regex.is_match(line) => {
                 let filename = line.split(' ').into_iter().last().unwrap();
                 current_path = match filename {
@@ -89,7 +82,6 @@ pub fn part_2(input: String) -> usize {
                     _ => current_path + filename + "/",
                 }
             }
-            line if dir_regex.is_match(line) => {}
             line if file_regex.is_match(line) => {
                 let size: usize = line
                     .split(' ')
@@ -116,9 +108,7 @@ pub fn part_2(input: String) -> usize {
                         String::from(root)
                     });
             }
-            _ => {
-                unreachable!();
-            }
+            _ => {}
         }
     }
     let disk_space = 70000000;
