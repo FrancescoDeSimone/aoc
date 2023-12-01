@@ -1,54 +1,29 @@
 pub mod aoc2022;
+pub mod aoc2023;
 use std::fs;
 
+macro_rules! add_day {
+    ($day:ident, $year:ident ) => {
+        println!("\n-------------------------------------");
+        println!(stringify!($day));
+        let file = fs::read_to_string(format!("src/{}/input/{}", stringify!($year),stringify!($day))).expect("file not found");
+        println!("Part 1: {}", $year::$day::part_1(file.clone()));
+        println!("Part 2: {}", $year::$day::part_2(file.clone()));
+        println!("-------------------------------------");
+    };
+}
+
 fn main() {
-    println!("part1");
-    let file = fs::read_to_string("src/aoc2022/input/day1").expect("file not found");
-    println!("Part 1: {}", aoc2022::day1::part_1(file.clone()));
-    println!("Part 2: {}", aoc2022::day1::part_2(file.clone()));
+    add_day!(day1, aoc2022);
+    add_day!(day2, aoc2022);
+    add_day!(day3, aoc2022);
+    add_day!(day4, aoc2022);
+    add_day!(day5, aoc2022);
+    add_day!(day6, aoc2022);
+    add_day!(day7, aoc2022);
+    add_day!(day8, aoc2022);
+    add_day!(day9, aoc2022);
+    add_day!(day10, aoc2022);
 
-    println!("part2");
-    let file = fs::read_to_string("src/aoc2022/input/day2").expect("file not found");
-    println!("Part 1: {}", aoc2022::day2::part_1(file.clone()));
-    println!("Part 2: {}", aoc2022::day2::part_2(file.clone()));
-
-    println!("part3");
-    let file = fs::read_to_string("src/aoc2022/input/day3").expect("file not found");
-    println!("Part 1: {}", aoc2022::day3::part_1(file.clone()));
-    println!("Part 2: {}", aoc2022::day3::part_2(file.clone()));
-
-    println!("part4");
-    let file = fs::read_to_string("src/aoc2022/input/day4").expect("file not found");
-    println!("Part 1: {}", aoc2022::day4::part_1(file.clone()));
-    println!("Part 2: {}", aoc2022::day4::part_2(file.clone()));
-
-    println!("part5");
-    let file = fs::read_to_string("src/aoc2022/input/day5").expect("file not found");
-    println!("Part 1: {}", aoc2022::day5::part_1(file.clone()));
-    println!("Part 2: {}", aoc2022::day5::part_2(file.clone()));
-
-    println!("part6");
-    let file = fs::read_to_string("src/aoc2022/input/day6").expect("file not found");
-    println!("Part 1: {}", aoc2022::day6::part_1(file.clone()));
-    println!("Part 2: {}", aoc2022::day6::part_2(file.clone()));
-
-    println!("part7");
-    let file = fs::read_to_string("src/aoc2022/input/day7").expect("file not found");
-    println!("Part 1: {}", aoc2022::day7::part_1(file.clone()));
-    println!("Part 2: {}", aoc2022::day7::part_2(file.clone()));
-
-    println!("part8");
-    let file = fs::read_to_string("src/aoc2022/input/day8").expect("file not found");
-    println!("Part 1: {}", aoc2022::day8::part_1(file.clone()));
-    println!("Part 2: {}", aoc2022::day8::part_2(file.clone()));
-
-    println!("part9");
-    let file = fs::read_to_string("src/aoc2022/input/day9").expect("file not found");
-    println!("Part 1: {}", aoc2022::day9::part_1(file.clone()));
-    println!("Part 2: {}", aoc2022::day9::part_2(file.clone()));
-
-    println!("part10");
-    let file = fs::read_to_string("src/aoc2022/input/day10").expect("file not found");
-    println!("Part 1: {}", aoc2022::day10::part_1(file.clone()));
-    println!("Part 2: {}", aoc2022::day10::part_2(file.clone()));
+    add_day!(day1, aoc2023);
 }
