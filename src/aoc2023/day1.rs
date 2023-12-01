@@ -19,11 +19,12 @@ pub fn part_1(input: String) -> usize {
     sum as usize
 }
 
-fn matching_number(number: &str) -> u32 {
+fn matching_number(number: &str) -> Vec<u32> {
+    let mut res = Vec::new();
     for start in 0..number.chars().count() {
-        for end in (start+1)..number.chars().count() {
+        for end in (start+1)..number.chars().count().min(start+5) {
             let num = &number[start..end+1];
-            let n = match num {
+            res.push(match num {
                 "one" => 1,
                 "two" => 2,
                 "three" => 3,
@@ -34,12 +35,9 @@ fn matching_number(number: &str) -> u32 {
                 "eight" => 8,
                 "nine" => 9,
                 _ => 0
-            };
-            if n > 0 {
-                return n;
-            }
+            });
         }}
-    0
+    res.into_iter().filter(|x| *x != 0).collect()
 }
 
 pub fn part_2(input: String) -> usize {
@@ -47,33 +45,28 @@ pub fn part_2(input: String) -> usize {
     let mut sum = 0;
     for lines in input.lines() {
         let l = lines.chars().collect::<Vec<char>>();
-        let mut number = String::new();
         for i in 0..lines.len() {
-            number += &l[i].to_string();
-            let n = matching_number(&number);
-            if n > 0{
-                sum += 10*n;
-                break;
-            }
-
             if l[i].is_numeric(){
-                sum += 10*l[i].to_digit(10).unwrap();
-                break;
+                let n = matching_number(&String::from_iter(&l[0..i]));
+                if !n.is_empty(){
+                    sum += 10*n.first().unwrap();
+                    break;
+                }else{
+                    sum += 10*l[i].to_digit(10).unwrap();
+                    break;
+                }
             }
         }
-
-        let mut number = String::new();
         for i in (0..lines.len()).rev() {
-
-            number = l[i].to_string() + &number;
-            let n = matching_number(&number);
-            if n > 0{
-                sum += n;
-                break;
-            }
             if l[i].is_numeric(){
-                sum += l[i].to_digit(10).unwrap();
-                break;
+                let n = matching_number(&String::from_iter(&l[(i+1)..l.len()]));
+                if !n.is_empty(){
+                sum += n.last().unwrap();
+                    break;
+                }else{
+                    sum += l[i].to_digit(10).unwrap();
+                    break;
+                }
             }
         }
     }
