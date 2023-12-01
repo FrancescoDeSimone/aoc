@@ -1,18 +1,17 @@
 pub fn part_1(input: String) -> usize {
     let mut sum = 0;
     for lines in input.lines() {
-        let l = lines;
-        let r = lines.chars().rev().collect::<String>();
-        for c in l.chars() {
-            if c.is_numeric(){
-                sum += 10*c.to_digit(10).unwrap();
+        let l = lines.chars().collect::<Vec<char>>();
+        for i in 0..lines.len() {
+            if l[i].is_numeric(){
+                sum += 10*l[i].to_digit(10).unwrap();
                 break;
             }
         }
 
-        for c in r.chars() {
-            if c.is_numeric(){
-                sum += c.to_digit(10).unwrap();
+        for i in (0..lines.len()).rev() {
+            if l[i].is_numeric(){
+                sum += l[i].to_digit(10).unwrap();
                 break;
             }
         }
@@ -44,34 +43,36 @@ fn matching_number(number: &str) -> u32 {
 }
 
 pub fn part_2(input: String) -> usize {
+
     let mut sum = 0;
     for lines in input.lines() {
-        let l = lines;
-        let r = lines.chars().rev().collect::<String>();
+        let l = lines.chars().collect::<Vec<char>>();
         let mut number = String::new();
-        for c in l.chars() {
-            number += &c.to_string();
+        for i in 0..lines.len() {
+            number += &l[i].to_string();
             let n = matching_number(&number);
             if n > 0{
                 sum += 10*n;
                 break;
             }
-            if c.is_numeric(){
-                sum += 10*c.to_digit(10).unwrap();
+
+            if l[i].is_numeric(){
+                sum += 10*l[i].to_digit(10).unwrap();
                 break;
             }
         }
 
         let mut number = String::new();
-        for c in r.chars() {
-            number = c.to_string() + &number;
+        for i in (0..lines.len()).rev() {
+
+            number = l[i].to_string() + &number;
             let n = matching_number(&number);
             if n > 0{
                 sum += n;
                 break;
             }
-            if c.is_numeric(){
-                sum += c.to_digit(10).unwrap();
+            if l[i].is_numeric(){
+                sum += l[i].to_digit(10).unwrap();
                 break;
             }
         }
