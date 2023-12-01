@@ -1,74 +1,51 @@
 pub fn part_1(input: String) -> usize {
     let mut sum = 0;
     for lines in input.lines() {
-        let l = lines.chars().collect::<Vec<char>>();
-        for i in 0..lines.len() {
-            if l[i].is_numeric(){
-                sum += 10*l[i].to_digit(10).unwrap();
-                break;
-            }
-        }
+        let input = lines.chars().collect::<Vec<char>>();
 
-        for i in (0..lines.len()).rev() {
-            if l[i].is_numeric(){
-                sum += l[i].to_digit(10).unwrap();
-                break;
-            }
-        }
+        let index = lines.find(|x: char| x.is_numeric()).unwrap();
+        sum += 10 * input[index].to_digit(10).unwrap();
+
+        let index = lines.len() - lines.chars().rev().position(|x: char| x.is_numeric()).unwrap() - 1;
+        sum += input[index].to_digit(10).unwrap();
     }
     sum as usize
 }
 
 fn matching_number(number: &str) -> Vec<u32> {
     let mut res = Vec::new();
-    for start in 0..number.chars().count() {
-        for end in (start+1)..number.chars().count().min(start+5) {
+    for start in 0..number.len() {
+        for end in start+1..number.len().min(start+5) {
             let num = &number[start..end+1];
-            res.push(match num {
-                "one" => 1,
-                "two" => 2,
-                "three" => 3,
-                "four" => 4,
-                "five" => 5,
-                "six" => 6,
-                "seven" => 7,
-                "eight" => 8,
-                "nine" => 9,
-                _ => 0
-            });
-        }}
-    res.into_iter().filter(|x| *x != 0).collect()
+            if let Some(val) = match num {
+                "one" => Some(1),
+                "two" => Some(2),
+                "three" => Some(3),
+                "four" => Some(4),
+                "five" => Some(5),
+                "six" => Some(6),
+                "seven" => Some(7),
+                "eight" => Some(8),
+                "nine" => Some(9),
+                _ => None
+            }{res.push(val);}
+        }
+    }
+    res
 }
 
 pub fn part_2(input: String) -> usize {
-
     let mut sum = 0;
     for lines in input.lines() {
-        let l = lines.chars().collect::<Vec<char>>();
-        for i in 0..lines.len() {
-            if l[i].is_numeric(){
-                let n = matching_number(&String::from_iter(&l[0..i]));
-                if !n.is_empty(){
-                    sum += 10*n.first().unwrap();
-                    break;
-                }else{
-                    sum += 10*l[i].to_digit(10).unwrap();
-                    break;
-                }
-            }
-        }
-        for i in (0..lines.len()).rev() {
-            if l[i].is_numeric(){
-                let n = matching_number(&String::from_iter(&l[(i+1)..l.len()]));
-                if !n.is_empty(){
-                sum += n.last().unwrap();
-                    break;
-                }else{
-                    sum += l[i].to_digit(10).unwrap();
-                    break;
-                }
-            }
-        }
+        let input = lines.chars().collect::<Vec<char>>();
+
+        let index = lines.find(|x: char| x.is_numeric()).unwrap_or(lines.len());
+        let number = matching_number(&lines[0..index]);
+        sum += 10 * if number.is_empty() {   input[index].to_digit(10).unwrap() } else { *number.first().unwrap() };
+
+        let index = lines.len() - lines.chars().rev().position(|x: char| x.is_numeric()).unwrap_or(lines.len()) - 1;
+        let number = matching_number(&lines[index+1..lines.len()]);
+        sum += if number.is_empty() {   input[index].to_digit(10).unwrap() } else { *number.last().unwrap() };
     }
     sum as usize
 }
