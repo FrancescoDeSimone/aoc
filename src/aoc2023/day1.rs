@@ -18,16 +18,16 @@ fn matching_number(number: &str) -> Vec<u32> {
         for end in start+1..number.len().min(start+5) {
             let num = &number[start..end+1];
             if let Some(val) = match num {
-                "one" => Some(1),
-                "two" => Some(2),
+                "one"   => Some(1),
+                "two"   => Some(2),
                 "three" => Some(3),
-                "four" => Some(4),
-                "five" => Some(5),
-                "six" => Some(6),
+                "four"  => Some(4),
+                "five"  => Some(5),
+                "six"   => Some(6),
                 "seven" => Some(7),
                 "eight" => Some(8),
-                "nine" => Some(9),
-                _ => None
+                "nine"  => Some(9),
+                _       => None
             }{res.push(val);}
         }
     }
@@ -40,12 +40,16 @@ pub fn part_2(input: String) -> usize {
         let input = lines.chars().collect::<Vec<char>>();
 
         let index = lines.find(|x: char| x.is_numeric()).unwrap_or(lines.len());
-        let number = matching_number(&lines[0..index]);
-        sum += 10 * if number.is_empty() {   input[index].to_digit(10).unwrap() } else { *number.first().unwrap() };
+        let numbers = matching_number(&lines[0..index]);
+        sum += 10 * if numbers.is_empty() {   input[index].to_digit(10).unwrap() } else { *numbers.first().unwrap() };
 
-        let index = lines.len() - lines.chars().rev().position(|x: char| x.is_numeric()).unwrap_or(lines.len()) - 1;
-        let number = matching_number(&lines[index+1..lines.len()]);
-        sum += if number.is_empty() {   input[index].to_digit(10).unwrap() } else { *number.last().unwrap() };
+        let last_number = match lines.chars().rev().position(|x: char| x.is_numeric()) {
+            Some(x) => x + 1,
+            None => lines.len()
+        };
+        let index = lines.len() - last_number;
+        let numbers = matching_number(&lines[index+1..lines.len()]);
+        sum += if numbers.is_empty() { input[index].to_digit(10).unwrap() } else { *numbers.last().unwrap() };
     }
     sum as usize
 }
@@ -53,14 +57,14 @@ pub fn part_2(input: String) -> usize {
 
 #[test]
 fn check_part1(){
-    let oracle =142;
+    let oracle = 142;
     let input = std::fs::read_to_string("src/aoc2023/tests/day1.part1").unwrap();
     assert_eq!(oracle, part_1(input));
 }
 
 #[test]
 fn check_part2(){
-    let oracle =281;
+    let oracle = 281;
     let input = std::fs::read_to_string("src/aoc2023/tests/day1.part2").unwrap();
     assert_eq!(oracle, part_2(input));
 }
