@@ -2,22 +2,22 @@ fn get_number(engine_schematic: &mut Vec<Vec<char>>,i:usize,j:usize) -> Option<u
     let mut num = String::new();
     let mut start = j;
     while start >= 1 && engine_schematic[i][start].is_digit(10) {
-        if engine_schematic[i][start-1].is_digit(10) {
-            start -=1;
-        }else {
+        if !engine_schematic[i][start-1].is_digit(10) {
             break;
         }
+        start -=1;
     }
+
     while start < engine_schematic[i].len() && engine_schematic[i][start].is_digit(10)  {
         num += &engine_schematic[i][start].to_string();
         engine_schematic[i][start] = '.';
         start +=1;
     }
-
-    if num.parse::<u32>().is_ok(){
-        Some(num.parse::<u32>().unwrap())
+    if let Ok(num) = num.parse::<u32>() {
+        Some(num)
+    } else {
+        None
     }
-    else {None}
 }
 
 fn  get_adjacent_numbers(engine_schematic: &mut Vec<Vec<char>>,i:usize,j:usize) -> Vec<u32> {
