@@ -1,8 +1,7 @@
 fn extract_balls(set: &Vec<&str>) -> [u32;3]{
     let mut balls:[u32;3] = [0,0,0];
     for ball in set {
-        let ball = ball.trim();
-        let ball = ball.split(" ").collect::<Vec<&str>>();
+        let ball = ball.trim().split(" ").collect::<Vec<&str>>();
         match ball[1] {
             "red" => balls[0] += ball[0].parse::<u32>().unwrap(),
             "green" => balls[1] += ball[0].parse::<u32>().unwrap(),
