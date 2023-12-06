@@ -42,4 +42,5 @@ fn main() {
     add_day!(day3, aoc2023);
     add_day!(day4, aoc2023);
     add_day!(day5, aoc2023);
+    add_day!(day6, aoc2023);
 }
