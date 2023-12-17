@@ -135,7 +135,8 @@ pub fn part_2(input: String) -> usize {
         row.iter().position(|&cell| cell == 'S').map(|j| (i, j))
     }).unwrap_or((0, 0)); // Default value in case 'S' is not found
     let visited = check_visited(&map, start);
-    check_enclosed(&visited)
+    // check_enclosed(&visited)
+    0
 }
 
 #[test]
