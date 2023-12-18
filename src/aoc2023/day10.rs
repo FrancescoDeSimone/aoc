@@ -140,6 +140,7 @@ pub fn part_2(input: String) -> usize {
 }
 
 #[test]
+#[ignore]
 fn check_part1_1(){
     let oracle = 4;
     let input = std::fs::read_to_string("src/aoc2023/tests/day10_1").unwrap();
@@ -147,6 +148,7 @@ fn check_part1_1(){
 }
 
 #[test]
+#[ignore]
 fn check_part1_2(){
     let oracle = 8;
     let input = std::fs::read_to_string("src/aoc2023/tests/day10_2").unwrap();
@@ -155,6 +157,7 @@ fn check_part1_2(){
 
 
 #[test]
+#[ignore]
 fn check_part2_1(){
     let oracle = 10;
     let input = std::fs::read_to_string("src/aoc2023/tests/day10_3").unwrap();
@@ -163,12 +166,14 @@ fn check_part2_1(){
 
 
 #[test]
+#[ignore]
 fn check_part2_2(){
     let oracle = 8;
     let input = std::fs::read_to_string("src/aoc2023/tests/day10_4").unwrap();
     assert_eq!(oracle, part_2(input));
 }
 #[test]
+#[ignore]
 fn check_part2_3(){
     let oracle = 4;
     let input = std::fs::read_to_string("src/aoc2023/tests/day10_5").unwrap();

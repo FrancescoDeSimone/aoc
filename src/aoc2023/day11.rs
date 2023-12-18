@@ -1,11 +1,23 @@
-fn extend_galaxy(galaxies: Vec<(usize, usize)>, distance: usize) -> Vec<(usize, usize)> {
+fn parse_input(input: &str) -> Vec<Vec<char>> {
+    input.lines().map(|line| line.chars().collect()).collect()
+}
+
+fn find_galaxies(map: &[Vec<char>]) -> Vec<(usize, usize)> {
+    map.iter().enumerate().flat_map(|(i, row)| {
+        row.iter().enumerate().filter_map(move |(j, &cell)| {
+            if cell == '#' { Some((i, j)) } else { None }
+        })
+    }).collect()
+}
+
+fn extend_galaxy(galaxies: &Vec<(usize, usize)>, distance: usize) -> Vec<(usize, usize)> {
     let mut real_galaxy = vec![];
-    for (_, galaxy) in galaxies.iter().enumerate() {
-        let x = (0..galaxy.0).fold(galaxy.0, |acc, index|
+    for &(x,y) in galaxies {
+        let x = (0..x).fold(x, |acc, index|
             acc + if galaxies.iter().all(|(x, _)| *x != index ) { distance -1 }
             else {0});
 
-        let y = (0..galaxy.1).fold(galaxy.1, |acc, index|
+        let y = (0..y).fold(y, |acc, index|
             acc + if galaxies.iter().all(|(_, y)| *y != index ) { distance -1 }
             else {0});
         real_galaxy.push((x, y));
@@ -14,16 +26,9 @@ fn extend_galaxy(galaxies: Vec<(usize, usize)>, distance: usize) -> Vec<(usize, 
 }
 
 pub fn part_1(input: String) -> i64 {
-    let map: Vec<Vec<char>> = input.lines().map(|line| {
-        line.chars().collect()
-    }).collect();
-
-    let galaxies: Vec<(usize, usize)> = map.iter().enumerate().flat_map(|(i, row)| {
-        row.iter().enumerate().filter_map(move |(j, &cell)| {
-            if cell == '#' {  Some((i, j)) } else {  None }
-        })
-    }).collect();
-    let galaxies: Vec<(usize, usize)> = extend_galaxy(galaxies, 2);
+    let map = parse_input(&input);
+    let galaxies = find_galaxies(&map);
+    let galaxies= extend_galaxy(&galaxies, 2);
 
     galaxies.iter().enumerate().flat_map(|(i, start)| {
         galaxies.iter().skip(i + 1).map(move |goal| {
@@ -35,15 +40,9 @@ pub fn part_1(input: String) -> i64 {
 }
 
 pub fn part_2(input: String) -> i64 {
-    let map: Vec<Vec<char>> = input.lines().map(|line| {
-        line.chars().collect()
-    }).collect();
-    let galaxies: Vec<(usize, usize)> = map.iter().enumerate().flat_map(|(i, row)| {
-        row.iter().enumerate().filter_map(move |(j, &cell)| {
-            if cell == '#' {  Some((i, j)) } else {  None }
-        })
-    }).collect();
-    let galaxies: Vec<(usize, usize)> = extend_galaxy(galaxies, 1000000);
+    let map = parse_input(&input);
+    let galaxies = find_galaxies(&map);
+    let galaxies = extend_galaxy(&galaxies, 1000000);
 
     galaxies.iter().enumerate().flat_map(|(i, start)| {
         galaxies.iter().skip(i + 1).map(move |goal| {
