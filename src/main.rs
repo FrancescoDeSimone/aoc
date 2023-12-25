@@ -5,7 +5,11 @@ use std::time::Instant;
 
 macro_rules! add_day {
     ($day:ident, $year:ident ) => {
-        let file = fs::read_to_string(format!("src/{}/input/{}", stringify!($year),stringify!($day)));
+        let file = fs::read_to_string(format!(
+            "src/{}/input/{}",
+            stringify!($year),
+            stringify!($day)
+        ));
         if file.is_ok() {
             let file = file.unwrap();
             println!("\n");
@@ -49,5 +53,8 @@ fn main() {
     add_day!(day9, aoc2023);
     add_day!(day10, aoc2023);
     add_day!(day11, aoc2023);
-    add_day!(day12, aoc2023);
+    // add_day!(day12, aoc2023);
+    // add_day!(day13, aoc2023);
+    add_day!(day14, aoc2023);
+    add_day!(day15, aoc2023);
 }

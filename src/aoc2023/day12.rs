@@ -1,9 +1,9 @@
 use rayon::prelude::*;
 fn check_valid(sequence: &str, groups: &Vec<usize>) -> u64 {
     let consecutive_damage = sequence.split(".")
-                                     .filter(|x| !x.is_empty())
-                                     .map(|x| x.chars().count())
-                                     .collect::<Vec<usize>>();
+        .filter(|x| !x.is_empty())
+        .map(|x| x.chars().count())
+        .collect::<Vec<usize>>();
     (consecutive_damage == *groups) as u64
 }
 
@@ -51,15 +51,22 @@ pub fn part_2(input: String) -> u64 {
         let groups = groups.repeat(5);
         let question_marks:i32 = sequence.chars().filter(|e| *e == '?').count() as i32;
         res += (0..(usize::pow(2, question_marks as u32))).into_par_iter().fold(|| 0_u64, |res, permutation| {
-            let mut seq_perm = sequence.to_string();
-            for n in 0..question_marks {
-                seq_perm = if permutation >> n & 1 == 0 {
-                    seq_perm.replacen('?', ".",1)
-                } else {
-                        seq_perm.replacen('?', "#",1)
-                    };
+            let mut seq_perm: Vec<char> = sequence.chars().collect();
+            let mut current_perm = permutation;
+            let mut remaining_question_marks = question_marks;
+            for c in seq_perm.iter_mut() {
+                if remaining_question_marks == 0 {
+                    break;
+                }
+                if *c == '?' {
+                    let bit = current_perm & 1;
+                    current_perm >>= 1;
+                    *c = if bit == 0 { '.' } else { '#' };
+                    remaining_question_marks -= 1;
+                }
             }
-            res + check_valid(&seq_perm, &groups)
+            let seq_str: String = seq_perm.iter().collect();
+            res + check_valid(&seq_str, &groups)
         }).sum::<u64>();
     }
     res
