@@ -1,60 +1,47 @@
-pub mod aoc2022;
-pub mod aoc2023;
 use std::fs;
+use std::path::Path;
 use std::time::Instant;
 
+const AOC_DIR: &str = "src";
+const INPUT_DIR: &str = "input";
+const FILE_EXT: &str = ".txt";
+
+pub mod aoc2022;
+pub mod aoc2023;
+
 macro_rules! add_day {
-    ($day:ident, $year:ident ) => {
-        let file = fs::read_to_string(format!(
-            "src/{}/input/{}",
-            stringify!($year),
-            stringify!($day)
-        ));
-        if file.is_ok() {
-            let file = file.unwrap();
-            println!("\n");
-            println!(stringify!($day));
-            println!("-------------------------------------------------------------");
-            let now = Instant::now();
-            println!("Part 1: {}", $year::$day::part_1(file.clone()));
-            let elapsed = now.elapsed();
-            println!("took: {:.2?}", elapsed);
-            let now = Instant::now();
-            println!("Part 2: {}", $year::$day::part_2(file.clone()));
-            let elapsed = now.elapsed();
-            println!("took: {:.2?}", elapsed);
-            println!("-------------------------------------------------------------");
-        }
-    };
+    ($day:ident, $year:ident) => {{
+        let file_path = Path::new(AOC_DIR)
+            .join(stringify!($year))
+            .join(INPUT_DIR)
+            .join(format!("{}{}", stringify!($day), FILE_EXT));
+        let file_contents = fs::read_to_string(file_path)?;
+        println!("\n");
+        println!("{}", stringify!($day));
+        println!("-------------------------------------------------------------");
+        let now = Instant::now();
+        println!("Part 1: {}", $year::$day::part_1(file_contents.clone()));
+        let elapsed = now.elapsed();
+        println!("took: {:.2?}", elapsed);
+        let now = Instant::now();
+        println!("Part 2: {}", $year::$day::part_2(file_contents.clone()));
+        let elapsed = now.elapsed();
+        println!("took: {:.2?}", elapsed);
+        println!("-------------------------------------------------------------");
+    }};
 }
 
-fn main() {
-    println!("Advent of Code 2022");
-    add_day!(day1, aoc2022);
-    add_day!(day2, aoc2022);
-    add_day!(day3, aoc2022);
-    add_day!(day4, aoc2022);
-    add_day!(day5, aoc2022);
-    add_day!(day6, aoc2022);
-    add_day!(day7, aoc2022);
-    add_day!(day8, aoc2022);
-    add_day!(day9, aoc2022);
-    add_day!(day10, aoc2022);
+macro_rules! add_days {
+    ($year:ident, $($day:ident),*) => {{
+        println!("\nAdvent of Code {}", stringify!($year));
+        $(
+            add_day!($day, $year);
+        )*
+    }};
+}
 
-    println!("\nAdvent of Code 2023");
-    add_day!(day1, aoc2023);
-    add_day!(day2, aoc2023);
-    add_day!(day3, aoc2023);
-    add_day!(day4, aoc2023);
-    // add_day!(day5, aoc2023);
-    add_day!(day6, aoc2023);
-    add_day!(day7, aoc2023);
-    add_day!(day8, aoc2023);
-    add_day!(day9, aoc2023);
-    add_day!(day10, aoc2023);
-    add_day!(day11, aoc2023);
-    // add_day!(day12, aoc2023);
-    // add_day!(day13, aoc2023);
-    add_day!(day14, aoc2023);
-    add_day!(day15, aoc2023);
+fn main() -> Result<(), std::io::Error> {
+    add_days!(aoc2022, day1, day2, day3, day4, day5, day6, day7, day8, day9, day10);
+    add_days!(aoc2023, day1, day2, day3, day4, day6, day7, day8, day9, day10, day11, day14, day15);
+    Ok(())
 }
