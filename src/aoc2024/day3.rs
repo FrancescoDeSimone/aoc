@@ -1,15 +1,16 @@
 use fancy_regex::{Captures, Regex};
 
 pub fn part_1(input: String) -> i32 {
-    let re = Regex::new(r"mul\(([0-9]+),([0-9]+)\)").unwrap();
-    let mut sum = 0;
-    for captures in re.captures_iter(&input) {
-        let captures = captures.unwrap();
-        let left: i32 = captures[1].parse().expect("Failed to parse left number");
-        let right: i32 = captures[2].parse().expect("Failed to parse right number");
-        sum += left * right;
-    }
-    sum
+    Regex::new(r"mul\(([0-9]+),([0-9]+)\)")
+        .unwrap()
+        .captures_iter(&input)
+        .filter_map(|captures| {
+            let captures = captures.ok()?;
+            let left = captures[1].parse::<i32>().ok()?;
+            let right = captures[2].parse::<i32>().ok()?;
+            Some(left * right)
+        })
+        .sum()
 }
 pub fn part_2(input: String) -> i32 {
     let input = input.replace("\n", "");
