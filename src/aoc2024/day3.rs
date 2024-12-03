@@ -13,7 +13,7 @@ pub fn part_1(input: String) -> i32 {
 }
 pub fn part_2(input: String) -> i32 {
     let input = input.replace("\n", "");
-    let re = Regex::new(r"(?m)don't\(\).*?do\(\)|don't.*?$").unwrap();
+    let re = Regex::new(r"(?m)don't\(\).*?do\(\)|don't\(\).*?$").unwrap();
     let input = re.replace_all(&input, "").to_string();
     part_1(input)
 }
