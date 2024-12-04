@@ -1,4 +1,4 @@
-use fancy_regex::{Captures, Regex};
+use fancy_regex::Regex;
 
 pub fn part_1(input: String) -> i32 {
     Regex::new(r"mul\(([0-9]+),([0-9]+)\)")
