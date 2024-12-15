@@ -44,6 +44,6 @@ macro_rules! add_days {
 fn main() -> Result<(), std::io::Error> {
     //add_days!(aoc2022, day1, day2, day3, day4, day5, day6, day7, day8, day9, day10);
     //add_days!(aoc2023, day1, day2, day3, day4, day6, day7, day8, day9, day10, day11, day14, day15);
-    add_days!(aoc2024, day1, day2, day3, day4, day5, day6, day7);
+    add_days!(aoc2024, day1, day2, day3, day4, day5, day6, day7, day8, day9, day10);
     Ok(())
 }
