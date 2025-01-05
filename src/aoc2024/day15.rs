@@ -1,0 +1,272 @@
+use std::{collections::VecDeque, ops::Range, thread, time::Duration, usize};
+
+fn printmap(map: &Vec<Vec<char>>, c: char) {
+    //print!("\x1B[2J\x1B[1;1H");
+    println!("moving -> {}", c);
+    for (i, row) in map.iter().enumerate() {
+        for (j, el) in row.iter().enumerate() {
+            print!("{}", el);
+        }
+        println!();
+    }
+    thread::sleep(Duration::from_millis(100));
+}
+fn find_start(input: &[Vec<char>]) -> Option<(usize, usize)> {
+    input.iter().enumerate().find_map(|(row_idx, row)| {
+        row.iter().enumerate().find_map(|(col_idx, &ch)| {
+            if ch == '@' {
+                Some((row_idx, col_idx))
+            } else {
+                None
+            }
+        })
+    })
+}
+
+fn get_map_value(map: &Vec<Vec<char>>, x: usize, y: usize, is_x_axis: bool, stop: i32) -> char {
+    map[if is_x_axis { stop as usize } else { x }][if is_x_axis { y } else { stop as usize }]
+}
+
+fn set_map_value(
+    map: &mut Vec<Vec<char>>,
+    x: usize,
+    y: usize,
+    is_x_axis: bool,
+    shift: i32,
+    value: char,
+) {
+    map[if is_x_axis { shift as usize } else { x }][if is_x_axis { y } else { shift as usize }] =
+        value;
+}
+
+fn shift_right(v: &mut Vec<char>, start: usize, end: usize) {
+    assert!(start <= end && end < v.len());
+
+    let sub_slice = &mut v[start..=end];
+    sub_slice.rotate_right(1);
+}
+
+fn shift_left(v: &mut Vec<char>, start: usize, end: usize) {
+    assert!(start <= end && end < v.len());
+
+    let sub_slice = &mut v[start..=end];
+    sub_slice.rotate_left(1);
+}
+
+fn count_wide(
+    v: &mut Vec<Vec<char>>,
+    index: usize,
+    start: usize,
+    end: usize,
+    direction: i32,
+) -> Range<usize> {
+    let mut wide = 0;
+    let mut start = if index > 2 { index - 3 } else { index };
+    let mut end = index + 2;
+    for _ in 0..2 {
+        let range = if direction > 0 {
+            start..=end
+        } else {
+            end..=start
+        };
+        let mut remove = true;
+        for x in range {
+            if v[x][start] == '[' || v[x][start] == ']' {
+                remove = false;
+            }
+        }
+        if remove {
+            start += 1;
+        }
+    }
+    for _ in 0..2 {
+        let range = if direction > 0 {
+            start..=end
+        } else {
+            end..=start
+        };
+        let mut remove = true;
+        for x in range {
+            if v[x][end] == '[' || v[x][end] == ']' {
+                remove = false;
+            }
+        }
+        if remove {
+            end -= 1;
+        }
+    }
+    start..end
+}
+fn shift_up_down(v: &mut Vec<Vec<char>>, index: usize, start: usize, end: usize, direction: i32) {
+    let wide = count_wide(v, index, start + 1, end, direction);
+    println!("DEBUGPRINT[21]: day15.rs:87: wide={:#?}", wide);
+    let range = if direction > 0 {
+        start..=end
+    } else {
+        end..=start
+    };
+    for x in range {
+        if v[start][index] == '[' {
+            v[x][index] = '[';
+            v[x][index + 1] = ']';
+            v[start][index + 1] = '.';
+        } else {
+            v[x][index] = ']';
+            v[x][index - 1] = '[';
+            v[start][index - 1] = '.';
+        }
+    }
+}
+
+fn move_to(robot: (usize, usize), offset: (i32, i32), map: &mut Vec<Vec<char>>) {
+    let (x, y) = (
+        (robot.0 as i32 + offset.0) as usize,
+        (robot.1 as i32 + offset.1) as usize,
+    );
+
+    match map[x][y] {
+        '.' => {
+            map[robot.0][robot.1] = '.';
+            map[x][y] = '@';
+        }
+        '#' => (),
+        '[' | ']' => {
+            let (mut stop, is_x_axis) = if offset.0 == 0 {
+                (y as i32, false)
+            } else {
+                (x as i32, true)
+            };
+
+            while get_map_value(map, x, y, is_x_axis, stop) != '.' {
+                stop += if is_x_axis { offset.0 } else { offset.1 };
+                if get_map_value(map, x, y, is_x_axis, stop) == '#' {
+                    return;
+                }
+            }
+            if !is_x_axis {
+                if offset.1 > 0 {
+                    shift_right(&mut map[x], y, stop as usize);
+                } else {
+                    shift_left(&mut map[x], stop as usize, y);
+                };
+            } else {
+                shift_up_down(map, y, x, stop as usize, offset.0);
+            }
+
+            map[robot.0][robot.1] = '.';
+            map[x][y] = '@';
+        }
+        'O' => {
+            let (mut stop, is_x_axis) = if offset.0 == 0 {
+                (y as i32, false)
+            } else {
+                (x as i32, true)
+            };
+
+            while get_map_value(map, x, y, is_x_axis, stop) != '.' {
+                stop += if is_x_axis { offset.0 } else { offset.1 };
+                if get_map_value(map, x, y, is_x_axis, stop) == '#' {
+                    return;
+                }
+            }
+
+            let axes = if is_x_axis { x as i32 } else { y as i32 };
+            let range = if axes > stop {
+                stop..=axes
+            } else {
+                axes..=stop
+            };
+            for shift in range {
+                set_map_value(map, x, y, is_x_axis, shift, 'O');
+            }
+            map[x][y] = '@';
+            map[robot.0][robot.1] = '.';
+        }
+        _ => (),
+    }
+}
+pub fn part_1(input: String) -> usize {
+    let (map, moves) = input.split_once("\n\n").unwrap();
+    let mut map: Vec<Vec<char>> = map.lines().map(|line| line.chars().collect()).collect();
+    for c in moves.chars() {
+        printmap(&map, c);
+        let robot = find_start(&map).unwrap();
+        match c {
+            '<' => move_to(robot, (0, -1), &mut map),
+            'v' => move_to(robot, (1, 0), &mut map),
+            '>' => move_to(robot, (0, 1), &mut map),
+            '^' => move_to(robot, (-1, 0), &mut map),
+            _ => continue,
+        }
+    }
+    map.iter()
+        .enumerate()
+        .flat_map(|(i, row)| row.iter().enumerate().map(move |(j, &el)| (el, i, j)))
+        .fold(
+            0,
+            |acc, (el, i, j)| {
+                if el == 'O' {
+                    acc + 100 * i + j
+                } else {
+                    acc
+                }
+            },
+        )
+}
+
+fn expand_map(input: &str) -> Vec<Vec<char>> {
+    input
+        .lines()
+        .map(|line| {
+            line.chars()
+                .flat_map(|ch| match ch {
+                    '#' => vec!['#', '#'],
+                    'O' => vec!['[', ']'],
+                    '.' => vec!['.', '.'],
+                    '@' => vec!['@', '.'],
+                    _ => vec![ch],
+                })
+                .collect()
+        })
+        .collect()
+}
+
+pub fn part_2(input: String) -> usize {
+    let (map, moves) = input.split_once("\n\n").unwrap();
+    let mut map: Vec<Vec<char>> = expand_map(map);
+    for c in moves.chars() {
+        printmap(&map, c);
+        let robot = find_start(&map).unwrap();
+        match c {
+            '<' => move_to(robot, (0, -1), &mut map),
+            'v' => move_to(robot, (1, 0), &mut map),
+            '>' => move_to(robot, (0, 1), &mut map),
+            '^' => move_to(robot, (-1, 0), &mut map),
+            _ => continue,
+        }
+    }
+    map.iter()
+        .enumerate()
+        .flat_map(|(i, row)| row.iter().enumerate().map(move |(j, &el)| (el, i, j)))
+        .fold(0, |acc, (el, i, j)| {
+            if el == '[' {
+                acc + 100 * i + j / 2
+            } else {
+                acc
+            }
+        })
+}
+
+#[test]
+fn check_part1() {
+    let oracle = 10092;
+    let input = std::fs::read_to_string("src/aoc2024/tests/day15.part1").unwrap();
+    assert_eq!(oracle, part_1(input));
+}
+
+#[test]
+fn check_part2() {
+    let oracle = 9021;
+    let input = std::fs::read_to_string("src/aoc2024/tests/day15.part1").unwrap();
+    assert_eq!(oracle, part_2(input));
+}
